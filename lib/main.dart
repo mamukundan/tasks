@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks/models/Task.dart';
 import 'package:tasks/screens/new-task.dart';
 
 void main() {
@@ -13,9 +14,48 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   int currentMenuIdx = 0;
 
+  static List<Task> tasks = [
+    Task("Learn Flutter", false),
+    Task("Learn Dart", true),
+    Task("Complete Udemy course", false),
+  ];
+
+  static createTaskCards(List<Task> tasks) {
+    List<Card> taskCards = [];
+    for (Task task in tasks) {
+      taskCards.add(createTaskCard(task));
+    }
+    return taskCards;
+  }
+
+  static createTaskCard(Task task) {
+    IconData iconData;
+    bool enabled = false;
+    TextDecoration strikeThrough = null;
+    if (task.isComplete) {
+      enabled = false;
+      iconData = Icons.check_circle;
+      strikeThrough = TextDecoration.lineThrough;
+    } else {
+      enabled = true;
+      iconData = Icons.radio_button_unchecked;
+      strikeThrough = null;
+    }
+    return Card(
+        child: ListTile(
+            leading: Icon(iconData),
+            enabled: enabled,
+            title: Text(
+              task.title,
+              style: TextStyle(decoration: strikeThrough),
+            )));
+  }
+
   final tabs = [
-    Center(
-      child: Text("home"),
+    Scaffold(
+      body: Column(
+        children: createTaskCards(tasks),
+      ),
     ),
     Center(
       child: Text("todo"),
@@ -45,6 +85,10 @@ class _AppState extends State<App> {
       'Delete all completed tasks',
       'Settings'
     ];
+    print(tasks);
+    for (var task in tasks) {
+      print(task);
+    }
     List<PopupMenuItem> popupMenuItems = [];
     PopupMenuItem popupMenuItem;
     for (String popupMenuItemTitle in popupMenuItemsTitle) {
